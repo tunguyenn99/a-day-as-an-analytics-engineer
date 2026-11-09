@@ -1,0 +1,71 @@
+version: 2
+models:
+- name: mart_product_daily
+  description: 'Product mart: sale-date x product. All observed refunds are attributed
+    back to original sale date; historical rows can change.'
+  columns:
+  - name: sale_date
+    data_type: date
+    description: Calendar date the order line was sold.
+    tests:
+    - not_null
+  - name: product_id
+    data_type: bigint
+    description: Product sold.
+  - name: units_sold
+    data_type: bigint
+    description: Order lines sold (one unit per line).
+  - name: orders
+    data_type: bigint
+    description: Distinct orders containing the product on this day.
+  - name: refunded_units
+    data_type: bigint
+    description: Units sold on this day that were later refunded, at least partly.
+  - name: gross_revenue_usd
+    data_type: numeric
+    description: Gross revenue of the product's units sold on this day, in USD.
+    tests:
+    - not_null
+    - non_negative
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.GrossRevenue
+  - name: cogs_usd
+    data_type: numeric
+    description: COGS of the product's units sold on this day, in USD.
+    tests:
+    - not_null
+    - non_negative
+  - name: refund_amount_usd
+    data_type: numeric
+    description: Refunds (any date) for units sold on this day, in USD.
+    tests:
+    - not_null
+    - non_negative
+  - name: net_revenue_usd
+    data_type: numeric
+    description: Gross revenue minus refunds for units sold on this day, in USD.
+    tests:
+    - not_null
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.NetRevenue
+  - name: unit_refund_rate
+    data_type: numeric
+    description: refunded_units / units_sold, between 0 and 1.
+  config:
+    meta:
+      domain: product
+      owner: analytics-engineering
+      openmetadata:
+        domain: Product
+        tier: Tier.Tier1
+    contract:
+      enforced: true
+  tests:
+  - unique_grain:
+      columns:
+      - sale_date
+      - product_id

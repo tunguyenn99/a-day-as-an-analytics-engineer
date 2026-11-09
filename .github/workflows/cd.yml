@@ -1,0 +1,59 @@
+name: CD
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: production-dbt
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      PGHOST: ${{ secrets.PGHOST }}
+      PGPORT: ${{ secrets.PGPORT }}
+      PGDATABASE: ${{ secrets.PGDATABASE }}
+      PGUSER: ${{ secrets.PGUSER }}
+      PGPASSWORD: ${{ secrets.PGPASSWORD }}
+      PGSSLMODE: require
+      DBT_SCHEMA: analytics
+      DBT_TARGET: prod
+      S3_ENDPOINT_URL: ${{ secrets.S3_ENDPOINT_URL }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION || 'us-east-1' }}
+      OPENMETADATA_HOST: ${{ secrets.OPENMETADATA_HOST }}
+      OPENMETADATA_JWT: ${{ secrets.OPENMETADATA_JWT }}
+      OPENMETADATA_SERVICE: ${{ vars.OPENMETADATA_SERVICE || 'supabase' }}
+      # Optional read-only catalog user for database metadata; falls back to PG*.
+      OPENMETADATA_PGUSER: ${{ secrets.OPENMETADATA_PGUSER }}
+      OPENMETADATA_PGPASSWORD: ${{ secrets.OPENMETADATA_PGPASSWORD }}
+      GRAFANA_URL: ${{ vars.GRAFANA_URL || 'http://localhost:3000' }}
+      METADATA_BIN: /tmp/metadata-venv/bin/metadata
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      # Ingestion SDK must match the provisioned OpenMetadata server.
+      - name: Install metadata connector in isolated environment
+        env:
+          OM_VERSION: ${{ vars.OPENMETADATA_VERSION }}
+        run: |
+          test -n "$OM_VERSION"
+          python -m venv /tmp/metadata-venv
+          /tmp/metadata-venv/bin/pip install "openmetadata-ingestion[postgres,dbt]==$OM_VERSION"
+      - name: Deploy
+        env:
+          MODE: ${{ github.event_name == 'workflow_dispatch' && 'full' || 'slim' }}
+        run: python -m scripts.deploy --mode "$MODE"

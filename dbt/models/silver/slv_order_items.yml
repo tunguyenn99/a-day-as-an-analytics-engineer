@@ -1,0 +1,41 @@
+version: 2
+models:
+- name: slv_order_items
+  description: Typed source records, one row per order_item_id. Source datetime timezone
+    is unspecified and preserved.
+  columns:
+  - name: order_item_id
+    description: Order line identifier from the source.
+    tests:
+    - unique
+    - not_null
+  - name: created_at
+    description: Order line timestamp (same as the order) as recorded by the source.
+    tests:
+    - not_null
+  - name: order_id
+    description: Order identifier from the source.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('slv_orders')
+        field: order_id
+  - name: product_id
+    description: Product identifier from the source.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('slv_products')
+        field: product_id
+  - name: is_primary_item
+    description: 1 if this line is the order's primary product, else 0.
+  - name: price_usd
+    description: Line price in USD before refunds.
+    tests:
+    - not_null
+    - non_negative
+  - name: cogs_usd
+    description: Line cost of goods sold in USD.
+    tests:
+    - not_null
+    - non_negative

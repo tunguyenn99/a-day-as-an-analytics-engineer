@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Web Analytics — Recorded Validation</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f0f4f8;color:#14243b;font:16px/1.6 system-ui,sans-serif}main{max-width:1400px;margin:40px auto;padding:40px;background:white;border:1px solid #dce5ed;border-radius:18px}.eyebrow{color:#176b62;font-weight:700;letter-spacing:.1em;text-transform:uppercase}h1{font-size:40px;margin:10px 0}h2{margin-top:40px}.muted{color:#516579}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:30px 0}.card{padding:22px;background:#eaf4f2;border-radius:12px}.card span{display:block;color:#315b54}strong{display:block;font-size:29px}small{font-size:14px}table{border-collapse:collapse;width:100%}td,th{text-align:left;padding:12px 16px;border-bottom:1px solid #dce5ed}td:last-child,th:last-child{text-align:right;font-variant-numeric:tabular-nums}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#122033;color:#dbe9f5;padding:24px;border-radius:12px;font:13px/1.65 monospace}.status{background:#e2f4e8;color:#1a6035;border-left:4px solid #259b58;padding:16px;margin-top:24px}a{color:#087f8c}.note{background:#fff4dc;padding:16px;border-radius:8px}
+</style><main><div class="eyebrow">Recorded verification · local PostgreSQL 16</div><h1>Web Analytics Engineering</h1><p class="muted">Real Xómdata SQL Server extraction. This is a captured evidence report, not a live monitoring dashboard or proof of a Supabase deployment.</p><div class="cards"><div class="card"><span>Gross revenue</span><strong>1,938,509.75 <small>USD</small></strong></div><div class="card"><span>Refunds</span><strong>85,338.69 <small>USD</small></strong></div><div class="card"><span>Net revenue</span><strong>1,853,171.06 <small>USD</small></strong></div></div><h2>Complete source extraction</h2><table><thead><tr><th>web_analytics table</th><th>Rows</th></tr></thead><tbody><tr><td>website_sessions</td><td>472,871</td></tr><tr><td>website_pageviews</td><td>1,188,124</td></tr><tr><td>orders</td><td>32,313</td></tr><tr><td>order_items</td><td>40,025</td></tr><tr><td>order_item_refunds</td><td>1,731</td></tr><tr><td>products</td><td>4</td></tr><tr><th>Total</th><th>1,735,068</th></tr></tbody></table><div class="status"><b>dbt full build</b> — Done. PASS=208 WARN=0 ERROR=0 SKIP=0 TOTAL=208<br>30 models · 1 snapshot · 177 data tests. Financial reconciliation checks passed.</div><h2>Actual dbt command output — final section</h2><pre>17:11:45  198 of 208 PASS not_null_fct_pageviews_website_session_id ...................... [PASS in 0.22s]
+17:11:45  195 of 208 PASS not_null_fct_pageviews_page_key ................................ [PASS in 0.23s]
+17:11:45  199 of 208 START test relationships_fct_pageviews_page_key__page_key__ref_dim_page_  [RUN]
+17:11:45  200 of 208 START test relationships_fct_pageviews_website_session_id__website_session_id__ref_fct_sessions_  [RUN]
+17:11:45  201 of 208 START test unique_fct_pageviews_website_pageview_id ................. [RUN]
+17:11:45  199 of 208 PASS relationships_fct_pageviews_page_key__page_key__ref_dim_page_ .. [PASS in 0.24s]
+17:11:46  200 of 208 PASS relationships_fct_pageviews_website_session_id__website_session_id__ref_fct_sessions_  [PASS in 0.37s]
+17:11:46  201 of 208 PASS unique_fct_pageviews_website_pageview_id ....................... [PASS in 0.95s]
+17:11:46  202 of 208 START sql table model analytics_platinum.mart_funnel_daily .......... [RUN]
+17:11:46  203 of 208 START sql table model analytics_platinum.mart_landing_page_daily .... [RUN]
+17:11:49  203 of 208 OK created sql table model analytics_platinum.mart_landing_page_daily  [SELECT 4537 in 2.62s]
+17:11:49  204 of 208 START test not_null_mart_landing_page_daily_session_date ............ [RUN]
+17:11:49  205 of 208 START test unique_grain_mart_landing_page_daily_session_date__page_key__device_key  [RUN]
+17:11:49  204 of 208 PASS not_null_mart_landing_page_daily_session_date .................. [PASS in 0.05s]
+17:11:49  205 of 208 PASS unique_grain_mart_landing_page_daily_session_date__page_key__device_key  [PASS in 0.06s]
+17:11:51  202 of 208 OK created sql table model analytics_platinum.mart_funnel_daily ..... [SELECT 2192 in 4.41s]
+17:11:51  206 of 208 START test funnel_is_monotonic ...................................... [RUN]
+17:11:51  207 of 208 START test not_null_mart_funnel_daily_session_date .................. [RUN]
+17:11:51  208 of 208 START test unique_grain_mart_funnel_daily_session_date__device_key .. [RUN]
+17:11:51  206 of 208 PASS funnel_is_monotonic ............................................ [PASS in 0.07s]
+17:11:51  208 of 208 PASS unique_grain_mart_funnel_daily_session_date__device_key ........ [PASS in 0.07s]
+17:11:51  207 of 208 PASS not_null_mart_funnel_daily_session_date ........................ [PASS in 0.08s]
+17:11:51  
+17:11:51  Finished running 1 snapshot, 24 table models, 177 data tests, 6 view models in 0 hours 0 minutes and 22.56 seconds (22.56s).
+17:11:51  
+17:11:51  Completed successfully
+17:11:51  
+17:11:51  Done. PASS=208 WARN=0 ERROR=0 SKIP=0 TOTAL=208</pre><p><a href="dbt-full-build.txt">Full captured dbt stdout</a></p><h2>Python checks — actual command output</h2><pre>{&quot;table&quot;: &quot;order_item_refunds&quot;, &quot;rows&quot;: 2, &quot;extraction_id&quot;: &quot;de56ecfcf0f9494eb7af9bf02ec9e943&quot;}
+{&quot;table&quot;: &quot;products&quot;, &quot;rows&quot;: 1, &quot;extraction_id&quot;: &quot;de56ecfcf0f9494eb7af9bf02ec9e943&quot;}
+.
+----------------------------------------------------------------------
+Ran 8 tests in 0.549s
+
+OK</pre><p><a href="python-tests.txt">Full Python output</a> · <a href="warehouse-results.json">Machine-readable SQL results</a></p><h2>Deployment boundary</h2><p class="note">Local warehouse measured approximately 985 MB. Supabase warehouse/S3 and OpenMetadata have not been validated with real service credentials. Raw archive was explicitly disabled for this local extraction.</p></main></html>

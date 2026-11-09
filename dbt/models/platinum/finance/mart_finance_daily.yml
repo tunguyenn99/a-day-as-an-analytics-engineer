@@ -1,0 +1,114 @@
+version: 2
+models:
+- name: mart_finance_daily
+  description: Finance mart by event date. Refunds use refund date; original sale
+    COGS is retained because return inventory recovery is unknown.
+  columns:
+  - name: date_day
+    data_type: date
+    description: Calendar date; every day between the first and last event is present.
+    tests:
+    - unique
+    - not_null
+  - name: orders
+    data_type: bigint
+    description: Orders placed on this day.
+  - name: refund_events
+    data_type: bigint
+    description: Number of refund events dated on this day.
+  - name: gross_revenue_usd
+    data_type: numeric
+    description: Gross revenue of orders placed on this day, in USD.
+    tests:
+    - not_null
+    - non_negative
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.GrossRevenue
+  - name: cogs_usd
+    data_type: numeric
+    description: COGS of orders placed on this day, in USD; refunds do not reduce
+      COGS.
+    tests:
+    - not_null
+    - non_negative
+  - name: refund_amount_usd
+    data_type: numeric
+    description: Refunds issued on this day (by refund date), in USD.
+    tests:
+    - not_null
+    - non_negative
+  - name: net_revenue_usd
+    data_type: numeric
+    description: Gross revenue minus refunds issued on this day, in USD; can be negative.
+    tests:
+    - not_null
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.NetRevenue
+  - name: gross_profit_after_refunds_usd
+    data_type: numeric
+    description: Gross revenue minus refunds minus COGS, in USD; can be negative on
+      refund-only days.
+    tests:
+    - not_null
+  config:
+    meta:
+      domain: finance
+      owner: analytics-engineering
+      openmetadata:
+        domain: Finance
+        tier: Tier.Tier1
+    contract:
+      enforced: true
+unit_tests:
+- name: refund_only_day_has_negative_net
+  description: Refunds are booked on refund date, so a day with only refunds shows
+    negative net revenue and gross profit; days without events are zero-filled.
+  model: mart_finance_daily
+  given:
+  - input: ref('dim_date')
+    rows:
+    - date_day: '2012-03-19'
+    - date_day: '2012-03-20'
+    - date_day: '2012-03-21'
+  - input: ref('fct_orders')
+    rows:
+    - order_date: '2012-03-19'
+      gross_revenue_usd: 100
+      cogs_usd: 40
+    - order_date: '2012-03-19'
+      gross_revenue_usd: 50
+      cogs_usd: 20
+  - input: ref('fct_refunds')
+    rows:
+    - refund_date: '2012-03-20'
+      refund_amount_usd: 30
+  expect:
+    rows:
+    - date_day: '2012-03-19'
+      orders: 2
+      refund_events: 0
+      gross_revenue_usd: '150.00'
+      cogs_usd: '60.00'
+      refund_amount_usd: 0
+      net_revenue_usd: '150.00'
+      gross_profit_after_refunds_usd: '90.00'
+    - date_day: '2012-03-20'
+      orders: 0
+      refund_events: 1
+      gross_revenue_usd: 0
+      cogs_usd: 0
+      refund_amount_usd: '30.00'
+      net_revenue_usd: '-30.00'
+      gross_profit_after_refunds_usd: '-30.00'
+    - date_day: '2012-03-21'
+      orders: 0
+      refund_events: 0
+      gross_revenue_usd: 0
+      cogs_usd: 0
+      refund_amount_usd: 0
+      net_revenue_usd: 0
+      gross_profit_after_refunds_usd: 0

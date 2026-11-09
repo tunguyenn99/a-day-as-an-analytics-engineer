@@ -1,0 +1,22 @@
+version: 2
+models:
+- name: dim_product
+  description: Current product dimension; stable product_id shared by order and item
+    facts.
+  columns:
+  - name: product_id
+    description: Product identifier; one row per current product.
+    tests:
+    - unique
+    - not_null
+  - name: launched_at
+    description: Timestamp the product was created in the source catalog.
+  - name: product_name
+    description: Product display name.
+  config:
+    meta:
+      domain: product
+      owner: analytics-engineering
+      openmetadata:
+        domain: Product
+        tier: Tier.Tier2

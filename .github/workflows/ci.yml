@@ -1,0 +1,55 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.6
+        env:
+          POSTGRES_PASSWORD: local-only
+        ports: ['5432:5432']
+        options: --health-cmd 'pg_isready -U postgres' --health-interval 5s --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGDATABASE: postgres
+      PGUSER: postgres
+      PGPASSWORD: local-only
+      PGSSLMODE: disable
+      DBT_SCHEMA: ci
+      RUN_DB_TESTS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: black --check ingestion scripts dags tests
+      - run: sqlfluff lint dbt/models dbt/tests
+      - run: python -m unittest discover -s tests
+      - run: python -m ingestion.web_analytics --fixture --no-archive
+      # dbt Core validation = parse + compile + database-backed build.
+      - run: dbt parse --project-dir dbt --profiles-dir dbt
+      - run: dbt compile --project-dir dbt --profiles-dir dbt
+      - run: dbt build --project-dir dbt --profiles-dir dbt
+      - run: dbt source freshness --project-dir dbt --profiles-dir dbt
+  openmetadata-config:
+    # Generated ingestion workflows must parse with the SDK CD will install.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned OpenMetadata SDK
+        env:
+          OM_VERSION: ${{ vars.OPENMETADATA_VERSION || '2.0.7.2' }}
+        run: pip install "openmetadata-ingestion[postgres,dbt]==$OM_VERSION" PyYAML requests
+      - run: python -m scripts.validate_openmetadata_config

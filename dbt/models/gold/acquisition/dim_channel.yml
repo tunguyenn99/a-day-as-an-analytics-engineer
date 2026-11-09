@@ -1,0 +1,30 @@
+version: 2
+models:
+- name: dim_channel
+  description: Acquisition dimension; unique UTM tuple and referrer. Tagged traffic
+    is not assumed to be paid.
+  columns:
+  - name: channel_key
+    description: 'Surrogate key of dim_channel: md5 of utm_source, utm_campaign, utm_content
+      and http_referer.'
+    tests:
+    - unique
+    - not_null
+  - name: utm_source
+    description: UTM source tag; null when the session was not tagged.
+  - name: utm_campaign
+    description: UTM campaign tag; null when the session was not tagged.
+  - name: utm_content
+    description: UTM content tag (ad variant); null when the session was not tagged.
+  - name: http_referer
+    description: Referring host; null for direct traffic.
+  - name: channel_group
+    description: 'Derived channel bucket: tagged_campaign (has utm_source), untagged_referral
+      (referrer only) or direct_or_unknown.'
+  config:
+    meta:
+      domain: acquisition
+      owner: analytics-engineering
+      openmetadata:
+        domain: Acquisition
+        tier: Tier.Tier2

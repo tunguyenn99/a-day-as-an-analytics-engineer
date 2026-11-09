@@ -1,0 +1,28 @@
+......{"table": "website_sessions", "rows": 3, "extraction_id": "0fc8e89c129c4456a72c672d3d3483d0"}
+{"table": "website_pageviews", "rows": 10, "extraction_id": "0fc8e89c129c4456a72c672d3d3483d0"}
+{"table": "orders", "rows": 3, "extraction_id": "0fc8e89c129c4456a72c672d3d3483d0"}
+{"table": "order_items", "rows": 4, "extraction_id": "0fc8e89c129c4456a72c672d3d3483d0"}
+{"table": "order_item_refunds", "rows": 2, "extraction_id": "0fc8e89c129c4456a72c672d3d3483d0"}
+{"table": "products", "rows": 1, "extraction_id": "0fc8e89c129c4456a72c672d3d3483d0"}
+{"table": "website_sessions", "rows": 3, "extraction_id": "b8389afbfaac484dbea2a28c9cc4e372"}
+{"table": "website_pageviews", "rows": 10, "extraction_id": "b8389afbfaac484dbea2a28c9cc4e372"}
+{"table": "orders", "rows": 3, "extraction_id": "b8389afbfaac484dbea2a28c9cc4e372"}
+{"table": "order_items", "rows": 4, "extraction_id": "b8389afbfaac484dbea2a28c9cc4e372"}
+{"table": "order_item_refunds", "rows": 2, "extraction_id": "b8389afbfaac484dbea2a28c9cc4e372"}
+.{"table": "website_sessions", "rows": 3, "extraction_id": "ca7b559d886749fc8bf6ec5700e4692d"}
+{"table": "website_pageviews", "rows": 10, "extraction_id": "ca7b559d886749fc8bf6ec5700e4692d"}
+{"table": "orders", "rows": 3, "extraction_id": "ca7b559d886749fc8bf6ec5700e4692d"}
+{"table": "order_items", "rows": 4, "extraction_id": "ca7b559d886749fc8bf6ec5700e4692d"}
+{"table": "order_item_refunds", "rows": 2, "extraction_id": "ca7b559d886749fc8bf6ec5700e4692d"}
+{"table": "products", "rows": 1, "extraction_id": "ca7b559d886749fc8bf6ec5700e4692d"}
+{"table": "website_sessions", "rows": 3, "extraction_id": "de56ecfcf0f9494eb7af9bf02ec9e943"}
+{"table": "website_pageviews", "rows": 10, "extraction_id": "de56ecfcf0f9494eb7af9bf02ec9e943"}
+{"table": "orders", "rows": 3, "extraction_id": "de56ecfcf0f9494eb7af9bf02ec9e943"}
+{"table": "order_items", "rows": 4, "extraction_id": "de56ecfcf0f9494eb7af9bf02ec9e943"}
+{"table": "order_item_refunds", "rows": 2, "extraction_id": "de56ecfcf0f9494eb7af9bf02ec9e943"}
+{"table": "products", "rows": 1, "extraction_id": "de56ecfcf0f9494eb7af9bf02ec9e943"}
+.
+----------------------------------------------------------------------
+Ran 8 tests in 0.549s
+
+OK

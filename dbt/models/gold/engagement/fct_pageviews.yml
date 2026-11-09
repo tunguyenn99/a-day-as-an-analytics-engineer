@@ -1,0 +1,48 @@
+version: 2
+models:
+- name: fct_pageviews
+  description: 'Engagement fact: one pageview. Last-page duration stays NULL; no fabricated
+    zero dwell time.'
+  columns:
+  - name: website_pageview_id
+    description: Pageview identifier from the source.
+    tests:
+    - unique
+    - not_null
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.Pageview
+  - name: website_session_id
+    description: Website session identifier from the source.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('fct_sessions')
+        field: website_session_id
+  - name: pageview_at
+    description: Timestamp of the pageview.
+  - name: pageview_date
+    description: Calendar date of the pageview.
+    tests:
+    - not_null
+  - name: page_key
+    description: 'Surrogate key of dim_page: md5 of pageview_url.'
+    tests:
+    - not_null
+    - relationships:
+        to: ref('dim_page')
+        field: page_key
+  - name: page_sequence
+    description: 1-based position of the pageview within its session, ordered by time
+      then pageview ID.
+  - name: observed_seconds_to_next_page
+    description: Seconds until the next pageview in the same session; null for the
+      last page (time on the last page is unknown).
+  config:
+    meta:
+      domain: engagement
+      owner: analytics-engineering
+      openmetadata:
+        domain: Engagement
+        tier: Tier.Tier2

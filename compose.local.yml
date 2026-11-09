@@ -1,0 +1,28 @@
+# Offline runtime: uses synthetic fixture and disposable local credentials.
+# Requires Compose >=2.24.4 for !override.
+services:
+  airflow:
+    env_file: !override [.env.example]
+    environment:
+      PGHOST: warehouse
+      PGPORT: '5432'
+      PGDATABASE: postgres
+      PGUSER: postgres
+      PGPASSWORD: local-only
+      PGSSLMODE: disable
+      DBT_SCHEMA: analytics
+      INGESTION_MODE: fixture
+      INGESTION_ARCHIVE: 'false'
+    depends_on:
+      warehouse: {condition: service_healthy}
+      airflow-db: {condition: service_healthy}
+  grafana:
+    env_file: !override [.env.example]
+    environment:
+      PGHOST: warehouse
+      PGPORT: '5432'
+      PGDATABASE: ${GRAFANA_PGDATABASE:-postgres}
+      PGUSER: postgres
+      PGPASSWORD: local-only
+      PGSSLMODE: disable
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-local-only-change-me}

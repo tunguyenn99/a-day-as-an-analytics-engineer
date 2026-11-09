@@ -1,0 +1,77 @@
+{
+  "title": "Web Analytics",
+  "uid": "web-analytics",
+  "schemaVersion": 40,
+  "panels": [
+    {
+      "id": 3,
+      "title": "Revenue and refunds (USD)",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "warehouse",
+        "type": "postgres"
+      },
+      "targets": [
+        {
+          "rawSql": "select date_day::timestamp as time, gross_revenue_usd, refund_amount_usd, net_revenue_usd from analytics_platinum.mart_finance_daily where $__timeFilter(date_day) order by 1",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 4,
+      "title": "Session conversion rate",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "warehouse",
+        "type": "postgres"
+      },
+      "targets": [
+        {
+          "rawSql": "select session_date::timestamp as time, sum(converted_sessions)::numeric / nullif(sum(sessions), 0) as conversion_rate from analytics_platinum.mart_marketing_daily where $__timeFilter(session_date) group by session_date order by 1",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 5,
+      "title": "Ordered funnel",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "warehouse",
+        "type": "postgres"
+      },
+      "targets": [
+        {
+          "rawSql": "select session_date::timestamp as time, sum(sessions) as sessions, sum(reached_products) as products, sum(reached_cart) as cart, sum(reached_thank_you) as thank_you from analytics_platinum.mart_funnel_daily where $__timeFilter(session_date) group by session_date order by 1",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 24,
+        "h": 8
+      }
+    }
+  ],
+  "time": {
+    "from": "2012-03-01T00:00:00Z",
+    "to": "2015-05-01T00:00:00Z"
+  }
+}

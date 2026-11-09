@@ -1,0 +1,57 @@
+version: 2
+models:
+- name: fct_order_items
+  description: 'Commerce fact: one order item with product-level revenue and COGS.'
+  columns:
+  - name: order_item_id
+    description: Order line identifier from the source.
+    tests:
+    - unique
+    - not_null
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.OrderItem
+  - name: order_id
+    description: Order identifier from the source.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('fct_orders')
+        field: order_id
+  - name: product_id
+    description: Product identifier from the source.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('dim_product')
+        field: product_id
+  - name: sold_at
+    description: Timestamp the order line was sold (order placement time).
+  - name: sale_date
+    description: Calendar date the order line was sold.
+    tests:
+    - not_null
+  - name: is_primary_item
+    description: 1 if this line is the order's primary product, else 0.
+  - name: gross_revenue_usd
+    description: Line price in USD before refunds (source price_usd).
+    tests:
+    - not_null
+    - non_negative
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.GrossRevenue
+  - name: cogs_usd
+    description: Line cost of goods sold in USD.
+    tests:
+    - not_null
+    - non_negative
+  config:
+    meta:
+      domain: commerce
+      owner: analytics-engineering
+      openmetadata:
+        domain: Commerce
+        tier: Tier.Tier2

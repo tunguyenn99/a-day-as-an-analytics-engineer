@@ -1,0 +1,47 @@
+version: 2
+models:
+- name: fct_refunds
+  description: 'Finance fact: one refund event; multiple refunds per item are aggregated
+    before joining sales.'
+  columns:
+  - name: order_item_refund_id
+    description: Refund identifier from the source; one row per refund event.
+    tests:
+    - unique
+    - not_null
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.Refund
+  - name: order_item_id
+    description: Refunded order line.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('fct_order_items')
+        field: order_item_id
+  - name: order_id
+    description: Order the refunded line belongs to.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('fct_orders')
+        field: order_id
+  - name: refunded_at
+    description: Timestamp the refund was issued.
+  - name: refund_date
+    description: Calendar date the refund was issued.
+    tests:
+    - not_null
+  - name: refund_amount_usd
+    description: Refunded amount in USD.
+    tests:
+    - not_null
+    - non_negative
+  config:
+    meta:
+      domain: finance
+      owner: analytics-engineering
+      openmetadata:
+        domain: Finance
+        tier: Tier.Tier2

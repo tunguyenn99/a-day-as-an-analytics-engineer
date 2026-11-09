@@ -1,0 +1,34 @@
+version: 2
+models:
+- name: slv_order_item_refunds
+  description: Typed source records, one row per order_item_refund_id. Source datetime
+    timezone is unspecified and preserved.
+  columns:
+  - name: order_item_refund_id
+    description: Refund identifier from the source; one row per refund event.
+    tests:
+    - unique
+    - not_null
+  - name: created_at
+    description: Refund timestamp as recorded by the source (timezone not published).
+    tests:
+    - not_null
+  - name: order_item_id
+    description: Order line identifier from the source.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('slv_order_items')
+        field: order_item_id
+  - name: order_id
+    description: Order identifier from the source.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('slv_orders')
+        field: order_id
+  - name: refund_amount_usd
+    description: Refunded amount in USD.
+    tests:
+    - not_null
+    - non_negative

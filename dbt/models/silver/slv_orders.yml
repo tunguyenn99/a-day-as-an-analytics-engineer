@@ -1,0 +1,50 @@
+version: 2
+models:
+- name: slv_orders
+  description: Typed source records, one row per order_id. Source datetime timezone
+    is unspecified and preserved.
+  columns:
+  - name: order_id
+    description: Order identifier from the source.
+    tests:
+    - unique
+    - not_null
+  - name: created_at
+    description: Order placement timestamp as recorded by the source (timezone not
+      published).
+    tests:
+    - not_null
+  - name: website_session_id
+    description: Website session identifier from the source.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('slv_website_sessions')
+        field: website_session_id
+  - name: user_id
+    description: Visitor/customer identifier from the source; stable across sessions
+      of the same browser user.
+    meta:
+      openmetadata:
+        tags:
+        - Sensitivity.Confidential
+  - name: primary_product_id
+    description: Primary product of the order; equals product_id of the line with
+      is_primary_item = 1.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('slv_products')
+        field: product_id
+  - name: items_purchased
+    description: Number of order lines (units) in the order.
+  - name: price_usd
+    description: Order total in USD (sum of its lines) before refunds.
+    tests:
+    - not_null
+    - non_negative
+  - name: cogs_usd
+    description: Order cost of goods sold in USD (sum of its lines).
+    tests:
+    - not_null
+    - non_negative

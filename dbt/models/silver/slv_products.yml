@@ -1,0 +1,17 @@
+version: 2
+models:
+- name: slv_products
+  description: Typed source records, one row per product_id. Source datetime timezone
+    is unspecified and preserved.
+  columns:
+  - name: product_id
+    description: Product identifier from the source.
+    tests:
+    - unique
+    - not_null
+  - name: created_at
+    description: Product creation timestamp as recorded by the source.
+    tests:
+    - not_null
+  - name: product_name
+    description: Product display name.

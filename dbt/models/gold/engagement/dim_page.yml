@@ -1,0 +1,22 @@
+version: 2
+models:
+- name: dim_page
+  description: Engagement URL dimension; explicit page taxonomy.
+  columns:
+  - name: page_key
+    description: 'Surrogate key of dim_page: md5 of pageview_url.'
+    tests:
+    - unique
+    - not_null
+  - name: pageview_url
+    description: Relative URL of the page viewed, e.g. /products or /cart.
+  - name: page_category
+    description: 'Funnel step of the page: landing, products, product_detail, cart,
+      shipping, billing, thank_you or other.'
+  config:
+    meta:
+      domain: engagement
+      owner: analytics-engineering
+      openmetadata:
+        domain: Engagement
+        tier: Tier.Tier2

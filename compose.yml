@@ -1,0 +1,77 @@
+services:
+  warehouse:
+    image: postgres:16.6
+    environment:
+      POSTGRES_PASSWORD: local-only
+    ports: ['127.0.0.1:5432:5432']
+    volumes: [warehouse:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      retries: 20
+  airflow-db:
+    image: postgres:16.6
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes: [airflow-db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U airflow']
+      interval: 5s
+      retries: 20
+  airflow:
+    build: .
+    profiles: [platform]
+    env_file: .env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/project/dags
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__METRICS__STATSD_ON: 'true'
+      AIRFLOW__METRICS__STATSD_HOST: statsd
+      AIRFLOW__METRICS__STATSD_PORT: '9125'
+      PGHOST: ${AIRFLOW_PGHOST:-warehouse}
+    command: standalone
+    ports: ['127.0.0.1:8080:8080']
+    volumes: [airflow-logs:/opt/airflow/logs]
+    depends_on:
+      airflow-db: {condition: service_healthy}
+  statsd:
+    image: prom/statsd-exporter:v0.28.0
+    profiles: [platform]
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    profiles: [platform]
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/alerts.yml:/etc/prometheus/alerts.yml:ro
+    ports: ['127.0.0.1:9090:9090']
+  loki:
+    image: grafana/loki:3.4.2
+    profiles: [platform]
+    command: -config.file=/etc/loki/local-config.yaml
+  alloy:
+    image: grafana/alloy:v1.8.0
+    profiles: [platform]
+    command: run /etc/alloy/config.alloy
+    volumes:
+      - ./observability/config.alloy:/etc/alloy/config.alloy:ro
+      - airflow-logs:/var/log/airflow:ro
+  grafana:
+    image: grafana/grafana:11.6.0
+    profiles: [platform]
+    env_file: .env
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD}
+    ports: ['127.0.0.1:3000:3000']
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana:/var/lib/grafana
+volumes:
+  warehouse:
+  airflow-db:
+  airflow-logs:
+  grafana:

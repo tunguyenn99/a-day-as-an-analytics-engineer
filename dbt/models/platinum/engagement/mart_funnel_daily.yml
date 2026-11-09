@@ -1,0 +1,120 @@
+version: 2
+models:
+- name: mart_funnel_daily
+  description: 'Ordered pageview funnel: products -> cart -> shipping -> billing ->
+    thank-you. Skipped or reversed steps do not qualify; thank-you is a page event,
+    not an order fact.'
+  columns:
+  - name: session_date
+    data_type: date
+    description: Calendar date the session started.
+    tests:
+    - not_null
+  - name: device_key
+    data_type: text
+    description: 'Surrogate key of dim_device: md5 of device_type.'
+  - name: sessions
+    data_type: bigint
+    description: Sessions started on this day on this device.
+  - name: reached_products
+    data_type: bigint
+    description: Sessions that viewed /products.
+  - name: reached_cart
+    data_type: bigint
+    description: Sessions that reached the cart after viewing /products.
+  - name: reached_shipping
+    data_type: bigint
+    description: Sessions that reached shipping after the cart.
+  - name: reached_billing
+    data_type: bigint
+    description: Sessions that reached billing after shipping.
+  - name: reached_thank_you
+    data_type: bigint
+    description: Sessions that reached the order confirmation page after billing.
+  config:
+    meta:
+      domain: engagement
+      owner: analytics-engineering
+      openmetadata:
+        domain: Engagement
+        tier: Tier.Tier1
+    contract:
+      enforced: true
+  tests:
+  - unique_grain:
+      columns:
+      - session_date
+      - device_key
+unit_tests:
+- name: funnel_counts_only_ordered_steps
+  description: Session 1 completes the funnel in order; session 2 visits cart before
+    products, so it reaches products but not cart; session 3 bounces.
+  model: mart_funnel_daily
+  given:
+  - input: ref('fct_sessions')
+    rows:
+    - website_session_id: 1
+      session_date: '2012-03-19'
+      device_key: desktop
+    - website_session_id: 2
+      session_date: '2012-03-19'
+      device_key: desktop
+    - website_session_id: 3
+      session_date: '2012-03-19'
+      device_key: desktop
+  - input: ref('fct_pageviews')
+    rows:
+    - website_session_id: 1
+      page_sequence: 1
+      page_key: landing
+    - website_session_id: 1
+      page_sequence: 2
+      page_key: products
+    - website_session_id: 1
+      page_sequence: 3
+      page_key: cart
+    - website_session_id: 1
+      page_sequence: 4
+      page_key: shipping
+    - website_session_id: 1
+      page_sequence: 5
+      page_key: billing
+    - website_session_id: 1
+      page_sequence: 6
+      page_key: thank_you
+    - website_session_id: 2
+      page_sequence: 1
+      page_key: landing
+    - website_session_id: 2
+      page_sequence: 2
+      page_key: cart
+    - website_session_id: 2
+      page_sequence: 3
+      page_key: products
+    - website_session_id: 3
+      page_sequence: 1
+      page_key: landing
+  - input: ref('dim_page')
+    rows:
+    - page_key: landing
+      page_category: landing
+    - page_key: products
+      page_category: products
+    - page_key: cart
+      page_category: cart
+    - page_key: shipping
+      page_category: shipping
+    - page_key: billing
+      page_category: billing
+    - page_key: thank_you
+      page_category: thank_you
+  expect:
+    rows:
+    - session_date: '2012-03-19'
+      device_key: desktop
+      sessions: 3
+      reached_products: 2
+      reached_cart: 1
+      reached_shipping: 1
+      reached_billing: 1
+      reached_thank_you: 1

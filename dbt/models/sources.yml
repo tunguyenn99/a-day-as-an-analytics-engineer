@@ -1,0 +1,149 @@
+version: 2
+sources:
+- name: landing
+  schema: landing_web_analytics
+  description: Atomically published full extractions from Xomdata SQL Server.
+  loaded_at_field: ingested_at
+  freshness:
+    warn_after:
+      count: 36
+      period: hour
+    error_after:
+      count: 72
+      period: hour
+  tables:
+  - name: website_sessions
+    description: Complete current extraction of web_analytics.website_sessions; raw
+      batches archived to S3.
+    meta:
+      owner: analytics-engineering
+      openmetadata:
+        domain: WebAnalyticsSource
+        tier: Tier.Tier3
+    columns:
+    - name: source_record_id
+      description: Primary key of the source row, taken from the SQL Server table's
+        ID column.
+      tests:
+      - unique
+      - not_null
+    - name: record_hash
+      description: SHA-256 of the serialized JSON payload; changes when any source
+        attribute changes.
+      tests:
+      - not_null
+  - name: website_pageviews
+    description: Complete current extraction of web_analytics.website_pageviews; raw
+      batches archived to S3.
+    meta:
+      owner: analytics-engineering
+      openmetadata:
+        domain: WebAnalyticsSource
+        tier: Tier.Tier3
+    columns:
+    - name: source_record_id
+      description: Primary key of the source row, taken from the SQL Server table's
+        ID column.
+      tests:
+      - unique
+      - not_null
+    - name: record_hash
+      description: SHA-256 of the serialized JSON payload; changes when any source
+        attribute changes.
+      tests:
+      - not_null
+  - name: orders
+    description: Complete current extraction of web_analytics.orders; raw batches
+      archived to S3.
+    meta:
+      owner: analytics-engineering
+      openmetadata:
+        domain: WebAnalyticsSource
+        tier: Tier.Tier3
+    columns:
+    - name: source_record_id
+      description: Primary key of the source row, taken from the SQL Server table's
+        ID column.
+      tests:
+      - unique
+      - not_null
+    - name: record_hash
+      description: SHA-256 of the serialized JSON payload; changes when any source
+        attribute changes.
+      tests:
+      - not_null
+  - name: order_items
+    description: Complete current extraction of web_analytics.order_items; raw batches
+      archived to S3.
+    meta:
+      owner: analytics-engineering
+      openmetadata:
+        domain: WebAnalyticsSource
+        tier: Tier.Tier3
+    columns:
+    - name: source_record_id
+      description: Primary key of the source row, taken from the SQL Server table's
+        ID column.
+      tests:
+      - unique
+      - not_null
+    - name: record_hash
+      description: SHA-256 of the serialized JSON payload; changes when any source
+        attribute changes.
+      tests:
+      - not_null
+  - name: order_item_refunds
+    description: Complete current extraction of web_analytics.order_item_refunds;
+      raw batches archived to S3.
+    meta:
+      owner: analytics-engineering
+      openmetadata:
+        domain: WebAnalyticsSource
+        tier: Tier.Tier3
+    columns:
+    - name: source_record_id
+      description: Primary key of the source row, taken from the SQL Server table's
+        ID column.
+      tests:
+      - unique
+      - not_null
+    - name: record_hash
+      description: SHA-256 of the serialized JSON payload; changes when any source
+        attribute changes.
+      tests:
+      - not_null
+  - name: products
+    description: Complete current extraction of web_analytics.products; raw batches
+      archived to S3.
+    meta:
+      owner: analytics-engineering
+      openmetadata:
+        domain: WebAnalyticsSource
+        tier: Tier.Tier3
+    columns:
+    - name: source_record_id
+      description: Primary key of the source row, taken from the SQL Server table's
+        ID column.
+      tests:
+      - unique
+      - not_null
+    - name: record_hash
+      description: SHA-256 of the serialized JSON payload; changes when any source
+        attribute changes.
+      tests:
+      - not_null
+  - name: ingestion_runs
+    description: One row per published full extraction; the latest published_at is
+      the freshness signal for the whole source.
+    meta:
+      owner: analytics-engineering
+      openmetadata:
+        domain: WebAnalyticsSource
+        tier: Tier.Tier3
+    loaded_at_field: published_at
+    columns:
+    - name: extraction_id
+      description: Extraction run ID; also the S3 raw batch prefix.
+      tests:
+      - unique
+      - not_null

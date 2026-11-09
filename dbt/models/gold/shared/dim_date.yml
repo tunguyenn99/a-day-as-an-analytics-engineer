@@ -1,0 +1,25 @@
+version: 2
+models:
+- name: dim_date
+  description: Conformed calendar spanning observed session/order/refund dates.
+  columns:
+  - name: date_day
+    description: Calendar date.
+    tests:
+    - unique
+    - not_null
+  - name: year_number
+    description: Calendar year.
+  - name: month_number
+    description: Month of year, 1-12.
+  - name: month_start
+    description: First day of the month.
+  - name: iso_day_of_week
+    description: ISO day of week, 1 = Monday to 7 = Sunday.
+  config:
+    meta:
+      domain: shared
+      owner: analytics-engineering
+      openmetadata:
+        domain: Shared
+        tier: Tier.Tier2

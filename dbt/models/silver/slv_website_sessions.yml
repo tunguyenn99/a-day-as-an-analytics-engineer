@@ -1,0 +1,34 @@
+version: 2
+models:
+- name: slv_website_sessions
+  description: Typed source records, one row per website_session_id. Source datetime
+    timezone is unspecified and preserved.
+  columns:
+  - name: website_session_id
+    description: Website session identifier from the source.
+    tests:
+    - unique
+    - not_null
+  - name: created_at
+    description: Session start timestamp as recorded by the source (timezone not published).
+    tests:
+    - not_null
+  - name: user_id
+    description: Visitor/customer identifier from the source; stable across sessions
+      of the same browser user.
+    meta:
+      openmetadata:
+        tags:
+        - Sensitivity.Confidential
+  - name: is_repeat_session
+    description: 1 if the user had an earlier session, else 0 (source flag).
+  - name: utm_source
+    description: UTM source tag; null when the session was not tagged.
+  - name: utm_campaign
+    description: UTM campaign tag; null when the session was not tagged.
+  - name: utm_content
+    description: UTM content tag (ad variant); null when the session was not tagged.
+  - name: device_type
+    description: 'Device class reported by the source: desktop or mobile.'
+  - name: http_referer
+    description: Referring host; null for direct traffic.

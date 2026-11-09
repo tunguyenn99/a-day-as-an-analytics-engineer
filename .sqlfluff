@@ -1,0 +1,9 @@
+[sqlfluff]
+dialect = postgres
+templater = jinja
+max_line_length = 100
+exclude_rules = RF04,LT05
+[sqlfluff:templater:jinja]
+apply_dbt_builtins = True
+[sqlfluff:templater:jinja:macros]
+scd2_key = {% macro scd2_key(columns) %}md5('key'){% endmacro %}

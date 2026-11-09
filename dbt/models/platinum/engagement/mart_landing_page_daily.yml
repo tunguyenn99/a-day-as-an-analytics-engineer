@@ -1,0 +1,44 @@
+version: 2
+models:
+- name: mart_landing_page_daily
+  description: 'Landing-page mart: session date x first URL x device; bounce means
+    exactly one observed pageview; sessions without pageviews are excluded.'
+  columns:
+  - name: session_date
+    data_type: date
+    description: Calendar date the session started.
+    tests:
+    - not_null
+  - name: page_key
+    data_type: text
+    description: Entry (first) page of the session; joins to dim_page.
+  - name: device_key
+    data_type: text
+    description: 'Surrogate key of dim_device: md5 of device_type.'
+  - name: sessions
+    data_type: bigint
+    description: Sessions that entered on this landing page on this day and device.
+  - name: bounced_sessions
+    data_type: bigint
+    description: Sessions with exactly one pageview.
+  - name: converted_sessions
+    data_type: bigint
+    description: Sessions with at least one order.
+  - name: bounce_rate
+    data_type: numeric
+    description: bounced_sessions / sessions, between 0 and 1.
+  config:
+    meta:
+      domain: engagement
+      owner: analytics-engineering
+      openmetadata:
+        domain: Engagement
+        tier: Tier.Tier1
+    contract:
+      enforced: true
+  tests:
+  - unique_grain:
+      columns:
+      - session_date
+      - page_key
+      - device_key

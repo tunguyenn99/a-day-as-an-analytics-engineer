@@ -1,0 +1,6 @@
+{
+  "name": "web-analytics-documentation",
+  "private": true,
+  "scripts": {"screenshots": "node capture.cjs"},
+  "devDependencies": {"playwright": "1.51.1"}
+}

@@ -1,0 +1,99 @@
+version: 2
+models:
+- name: mart_marketing_daily
+  description: 'Marketing mart: session-start date x channel x device; session-linked
+    orders only. Conversion counts sessions, not orders.'
+  columns:
+  - name: session_date
+    data_type: date
+    description: Calendar date the session started.
+    tests:
+    - not_null
+  - name: channel_key
+    data_type: text
+    description: 'Surrogate key of dim_channel: md5 of utm_source, utm_campaign, utm_content
+      and http_referer.'
+  - name: device_key
+    data_type: text
+    description: 'Surrogate key of dim_device: md5 of device_type.'
+  - name: sessions
+    data_type: bigint
+    description: Number of sessions at this grain.
+  - name: converted_sessions
+    data_type: bigint
+    description: Sessions with at least one order.
+  - name: orders
+    data_type: bigint
+    description: Orders placed in sessions started on this day (attributed to the
+      session date).
+  - name: gross_revenue_usd
+    data_type: numeric
+    description: Gross revenue of orders from these sessions, in USD.
+    tests:
+    - not_null
+    - non_negative
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.GrossRevenue
+  - name: session_conversion_rate
+    data_type: numeric
+    description: converted_sessions / sessions, between 0 and 1.
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.SessionConversionRate
+  - name: revenue_per_session_usd
+    data_type: numeric
+    description: Gross revenue divided by sessions, in USD.
+    tests:
+    - not_null
+    - non_negative
+  config:
+    meta:
+      domain: marketing
+      owner: analytics-engineering
+      openmetadata:
+        domain: Marketing
+        tier: Tier.Tier1
+    contract:
+      enforced: true
+  tests:
+  - unique_grain:
+      columns:
+      - session_date
+      - channel_key
+      - device_key
+unit_tests:
+- name: conversion_counts_sessions_not_orders
+  description: A session with two orders counts once in converted_sessions but twice
+    in orders.
+  model: mart_marketing_daily
+  given:
+  - input: ref('fct_sessions')
+    rows:
+    - website_session_id: 1
+      session_date: '2012-03-19'
+      channel_key: gsearch
+      device_key: desktop
+    - website_session_id: 2
+      session_date: '2012-03-19'
+      channel_key: gsearch
+      device_key: desktop
+  - input: ref('fct_orders')
+    rows:
+    - website_session_id: 1
+      gross_revenue_usd: 10
+    - website_session_id: 1
+      gross_revenue_usd: 20
+  expect:
+    rows:
+    - session_date: '2012-03-19'
+      channel_key: gsearch
+      device_key: desktop
+      sessions: 2
+      converted_sessions: 1
+      orders: 2
+      gross_revenue_usd: '30.00'
+      session_conversion_rate: '0.50000000000000000000'
+      revenue_per_session_usd: '15.0000000000000000'

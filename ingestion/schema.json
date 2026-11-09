@@ -1,0 +1,50 @@
+{
+  "website_sessions": {
+    "website_session_id": "bigint",
+    "created_at": "timestamp",
+    "user_id": "bigint",
+    "is_repeat_session": "integer",
+    "utm_source": "text",
+    "utm_campaign": "text",
+    "utm_content": "text",
+    "device_type": "text",
+    "http_referer": "text"
+  },
+  "website_pageviews": {
+    "website_pageview_id": "bigint",
+    "created_at": "timestamp",
+    "website_session_id": "bigint",
+    "pageview_url": "text"
+  },
+  "orders": {
+    "order_id": "bigint",
+    "created_at": "timestamp",
+    "website_session_id": "bigint",
+    "user_id": "bigint",
+    "primary_product_id": "bigint",
+    "items_purchased": "integer",
+    "price_usd": "numeric(18, 2)",
+    "cogs_usd": "numeric(18, 2)"
+  },
+  "order_items": {
+    "order_item_id": "bigint",
+    "created_at": "timestamp",
+    "order_id": "bigint",
+    "product_id": "bigint",
+    "is_primary_item": "integer",
+    "price_usd": "numeric(18, 2)",
+    "cogs_usd": "numeric(18, 2)"
+  },
+  "order_item_refunds": {
+    "order_item_refund_id": "bigint",
+    "created_at": "timestamp",
+    "order_item_id": "bigint",
+    "order_id": "bigint",
+    "refund_amount_usd": "numeric(18, 2)"
+  },
+  "products": {
+    "product_id": "bigint",
+    "created_at": "timestamp",
+    "product_name": "text"
+  }
+}

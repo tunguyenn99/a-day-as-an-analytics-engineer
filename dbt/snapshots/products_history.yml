@@ -1,0 +1,22 @@
+version: 2
+snapshots:
+- name: products_history
+  description: Observed product-name SCD2; source has no updated_at.
+  columns:
+  - name: dbt_scd_id
+    description: Unique ID of the observed product version.
+    tests:
+    - unique
+    - not_null
+  - name: product_id
+    description: Product identifier from the source.
+    tests:
+    - not_null
+  - name: product_name
+    description: Product name tracked for changes (check strategy).
+  - name: dbt_valid_from
+    description: When the snapshot first observed this version.
+  - name: dbt_valid_to
+    description: When this version was replaced or hard-deleted; null while current.
+  - name: dbt_updated_at
+    description: Snapshot run timestamp that wrote this version.

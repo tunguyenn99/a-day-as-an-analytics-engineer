@@ -1,0 +1,192 @@
+{
+  "products": [
+    {
+      "product_id": 1,
+      "created_at": "2012-03-19T08:00:00",
+      "product_name": "Fixture bear"
+    }
+  ],
+  "website_sessions": [
+    {
+      "website_session_id": 1,
+      "created_at": "2015-03-01T10:00:00",
+      "user_id": 101,
+      "is_repeat_session": 0,
+      "utm_source": "gsearch",
+      "utm_campaign": "nonbrand",
+      "utm_content": null,
+      "device_type": "desktop",
+      "http_referer": null
+    },
+    {
+      "website_session_id": 2,
+      "created_at": "2015-03-01T10:00:00",
+      "user_id": 102,
+      "is_repeat_session": 0,
+      "utm_source": null,
+      "utm_campaign": null,
+      "utm_content": null,
+      "device_type": "desktop",
+      "http_referer": null
+    },
+    {
+      "website_session_id": 3,
+      "created_at": "2015-03-01T10:00:00",
+      "user_id": 103,
+      "is_repeat_session": 0,
+      "utm_source": null,
+      "utm_campaign": null,
+      "utm_content": null,
+      "device_type": "mobile",
+      "http_referer": null
+    }
+  ],
+  "website_pageviews": [
+    {
+      "website_pageview_id": 1,
+      "website_session_id": 1,
+      "created_at": "2015-03-01T10:00:00",
+      "pageview_url": "/home"
+    },
+    {
+      "website_pageview_id": 2,
+      "website_session_id": 1,
+      "created_at": "2015-03-01T10:01:00",
+      "pageview_url": "/products"
+    },
+    {
+      "website_pageview_id": 3,
+      "website_session_id": 1,
+      "created_at": "2015-03-01T10:02:00",
+      "pageview_url": "/cart"
+    },
+    {
+      "website_pageview_id": 4,
+      "website_session_id": 1,
+      "created_at": "2015-03-01T10:03:00",
+      "pageview_url": "/shipping"
+    },
+    {
+      "website_pageview_id": 5,
+      "website_session_id": 1,
+      "created_at": "2015-03-01T10:04:00",
+      "pageview_url": "/billing-2"
+    },
+    {
+      "website_pageview_id": 6,
+      "website_session_id": 1,
+      "created_at": "2015-03-01T10:05:00",
+      "pageview_url": "/thank-you-for-your-order"
+    },
+    {
+      "website_pageview_id": 7,
+      "website_session_id": 2,
+      "created_at": "2015-03-01T10:00:00",
+      "pageview_url": "/home"
+    },
+    {
+      "website_pageview_id": 8,
+      "website_session_id": 3,
+      "created_at": "2015-03-01T10:00:00",
+      "pageview_url": "/cart"
+    },
+    {
+      "website_pageview_id": 9,
+      "website_session_id": 3,
+      "created_at": "2015-03-01T10:01:00",
+      "pageview_url": "/products"
+    },
+    {
+      "website_pageview_id": 10,
+      "website_session_id": 3,
+      "created_at": "2015-03-01T10:02:00",
+      "pageview_url": "/billing"
+    }
+  ],
+  "orders": [
+    {
+      "order_id": 1,
+      "created_at": "2015-03-01T10:00:00",
+      "website_session_id": 1,
+      "user_id": 101,
+      "primary_product_id": 1,
+      "items_purchased": 2,
+      "price_usd": "100",
+      "cogs_usd": "20"
+    },
+    {
+      "order_id": 2,
+      "created_at": "2015-03-01T10:00:00",
+      "website_session_id": 1,
+      "user_id": 101,
+      "primary_product_id": 1,
+      "items_purchased": 1,
+      "price_usd": "30",
+      "cogs_usd": "10"
+    },
+    {
+      "order_id": 3,
+      "created_at": "2015-03-01T10:00:00",
+      "website_session_id": 2,
+      "user_id": 102,
+      "primary_product_id": 1,
+      "items_purchased": 1,
+      "price_usd": "20",
+      "cogs_usd": "10"
+    }
+  ],
+  "order_items": [
+    {
+      "order_item_id": 1,
+      "created_at": "2015-03-01T10:00:00",
+      "order_id": 1,
+      "product_id": 1,
+      "is_primary_item": 1,
+      "price_usd": "60",
+      "cogs_usd": "10.00"
+    },
+    {
+      "order_item_id": 2,
+      "created_at": "2015-03-01T10:00:00",
+      "order_id": 1,
+      "product_id": 1,
+      "is_primary_item": 1,
+      "price_usd": "40",
+      "cogs_usd": "10.00"
+    },
+    {
+      "order_item_id": 3,
+      "created_at": "2015-03-01T10:00:00",
+      "order_id": 2,
+      "product_id": 1,
+      "is_primary_item": 1,
+      "price_usd": "30",
+      "cogs_usd": "10.00"
+    },
+    {
+      "order_item_id": 4,
+      "created_at": "2015-03-01T10:00:00",
+      "order_id": 3,
+      "product_id": 1,
+      "is_primary_item": 1,
+      "price_usd": "20",
+      "cogs_usd": "10.00"
+    }
+  ],
+  "order_item_refunds": [
+    {
+      "order_item_refund_id": 1,
+      "created_at": "2015-03-02T10:00:00",
+      "order_item_id": 1,
+      "order_id": 1,
+      "refund_amount_usd": "10.00"
+    },
+    {
+      "order_item_refund_id": 2,
+      "created_at": "2015-03-03T10:00:00",
+      "order_item_id": 1,
+      "order_id": 1,
+      "refund_amount_usd": "5.00"
+    }
+  ]
+}

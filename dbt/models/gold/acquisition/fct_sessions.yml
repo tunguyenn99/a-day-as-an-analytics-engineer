@@ -1,0 +1,56 @@
+version: 2
+models:
+- name: fct_sessions
+  description: 'Acquisition fact: exactly one row per supplied website session; preserves
+    source sessionization.'
+  columns:
+  - name: website_session_id
+    description: Website session identifier from the source.
+    tests:
+    - unique
+    - not_null
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.Session
+  - name: session_started_at
+    description: Timestamp the session started.
+  - name: session_date
+    description: Calendar date the session started.
+    tests:
+    - not_null
+  - name: user_id
+    description: Visitor who started the session.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('dim_customer')
+        field: user_id
+    meta:
+      openmetadata:
+        tags:
+        - Sensitivity.Confidential
+  - name: is_repeat_session
+    description: 1 if the user had an earlier session, else 0 (source flag).
+  - name: channel_key
+    description: 'Surrogate key of dim_channel: md5 of utm_source, utm_campaign, utm_content
+      and http_referer.'
+    tests:
+    - not_null
+    - relationships:
+        to: ref('dim_channel')
+        field: channel_key
+  - name: device_key
+    description: 'Surrogate key of dim_device: md5 of device_type.'
+    tests:
+    - not_null
+    - relationships:
+        to: ref('dim_device')
+        field: device_key
+  config:
+    meta:
+      domain: acquisition
+      owner: analytics-engineering
+      openmetadata:
+        domain: Acquisition
+        tier: Tier.Tier2

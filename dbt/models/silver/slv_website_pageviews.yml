@@ -1,0 +1,24 @@
+version: 2
+models:
+- name: slv_website_pageviews
+  description: Typed source records, one row per website_pageview_id. Source datetime
+    timezone is unspecified and preserved.
+  columns:
+  - name: website_pageview_id
+    description: Pageview identifier from the source.
+    tests:
+    - unique
+    - not_null
+  - name: created_at
+    description: Pageview timestamp as recorded by the source (timezone not published).
+    tests:
+    - not_null
+  - name: website_session_id
+    description: Website session identifier from the source.
+    tests:
+    - not_null
+    - relationships:
+        to: ref('slv_website_sessions')
+        field: website_session_id
+  - name: pageview_url
+    description: Relative URL of the page viewed, e.g. /products or /cart.

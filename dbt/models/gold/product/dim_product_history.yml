@@ -1,0 +1,29 @@
+version: 2
+models:
+- name: dim_product_history
+  description: SCD2 product names as observed by pipeline; not reconstructed historical
+    business validity.
+  columns:
+  - name: product_version_key
+    description: Snapshot version ID (dbt_scd_id); unique per observed product version.
+    tests:
+    - unique
+    - not_null
+  - name: product_id
+    description: Product identifier; several rows when the name changed.
+  - name: product_name
+    description: Product name during this version's validity window.
+  - name: observed_valid_from
+    description: When this product version was first observed by the snapshot (not
+      when it changed in the source).
+  - name: observed_valid_to
+    description: When this version stopped being current; null for the current version.
+  - name: is_current
+    description: True for the version currently active in the source.
+  config:
+    meta:
+      domain: product
+      owner: analytics-engineering
+      openmetadata:
+        domain: Product
+        tier: Tier.Tier2

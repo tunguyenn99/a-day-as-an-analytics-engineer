@@ -1,0 +1,56 @@
+version: 2
+models:
+- name: mart_customer_cohorts
+  description: First-order monthly cohorts, observed purchasing months only. Gross
+    LTV excludes refunds and unobserved future activity; denominator is original cohort
+    size.
+  columns:
+  - name: cohort_month
+    data_type: date
+    description: Month of the customer's first order (cohort).
+  - name: activity_month
+    data_type: date
+    description: Month in which the cohort's orders were placed.
+  - name: months_since_first_order
+    data_type: integer
+    description: Months between cohort_month and activity_month; 0 is the first-order
+      month.
+  - name: cohort_customers
+    data_type: bigint
+    description: Customers whose first order was in cohort_month.
+  - name: purchasing_customers
+    data_type: bigint
+    description: Cohort customers who ordered in activity_month.
+  - name: orders
+    data_type: bigint
+    description: Orders placed by the cohort in activity_month.
+  - name: gross_revenue_usd
+    data_type: numeric
+    description: Gross revenue from the cohort in activity_month, in USD.
+    tests:
+    - not_null
+    - non_negative
+    meta:
+      openmetadata:
+        glossary:
+        - WebAnalytics.GrossRevenue
+  - name: cumulative_gross_ltv_usd
+    data_type: numeric
+    description: Running gross revenue per cohort customer, in USD, up to activity_month.
+    tests:
+    - not_null
+    - non_negative
+  config:
+    meta:
+      domain: customer
+      owner: analytics-engineering
+      openmetadata:
+        domain: Customer
+        tier: Tier.Tier1
+    contract:
+      enforced: true
+  tests:
+  - unique_grain:
+      columns:
+      - cohort_month
+      - activity_month

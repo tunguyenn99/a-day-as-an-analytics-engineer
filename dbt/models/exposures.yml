@@ -1,0 +1,19 @@
+version: 2
+exposures:
+- name: grafana_web_analytics
+  label: Grafana — Web Analytics
+  type: dashboard
+  maturity: medium
+  url: http://localhost:3000/d/web-analytics
+  meta:
+    # Dashboard registered by scripts/openmetadata_bootstrap.py.
+    open_metadata_fqn: grafana.web-analytics
+  description: Revenue and refunds, session conversion rate and ordered funnel
+    (observability/dashboards/analytics.json). Queries read analytics_platinum
+    directly, so column renames in these marts break the dashboard.
+  depends_on:
+  - ref('mart_finance_daily')
+  - ref('mart_marketing_daily')
+  - ref('mart_funnel_daily')
+  owner:
+    name: analytics-engineering

@@ -1,0 +1,36 @@
+# Prometheus alert rules for the Airflow pipeline (metrics via statsd-exporter).
+# Firing alerts show in Prometheus (/alerts) and in Grafana Alerting as
+# data-source-managed rules. Add Alertmanager to route them to chat/e-mail.
+groups:
+  - name: airflow
+    rules:
+      - alert: AirflowExporterDown
+        expr: up{job="airflow"} == 0
+        for: 5m
+        labels: {severity: critical}
+        annotations:
+          summary: statsd-exporter is unreachable; Airflow metrics are missing.
+      - alert: AirflowSchedulerNotHeartbeating
+        expr: rate(airflow_scheduler_heartbeat[5m]) == 0
+        for: 5m
+        labels: {severity: critical}
+        annotations:
+          summary: Airflow scheduler has stopped heartbeating; no DAG runs will start.
+      - alert: AirflowDagImportErrors
+        expr: airflow_dag_processing_import_errors > 0
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: '{{ $value }} DAG file(s) fail to import.'
+      - alert: AirflowTaskFailures
+        expr: increase(airflow_ti_failures[30m]) > 0
+        labels: {severity: warning}
+        annotations:
+          summary: Airflow task instances failed in the last 30 minutes.
+      - alert: MedallionDagNoRecentSuccess
+        # Daily schedule: allow one missed run plus slack before alerting.
+        expr: increase(airflow_dagrun_duration_success_web_analytics_medallion_count[26h]) == 0
+        for: 30m
+        labels: {severity: critical}
+        annotations:
+          summary: web_analytics_medallion has not succeeded in 26 hours; marts are stale.

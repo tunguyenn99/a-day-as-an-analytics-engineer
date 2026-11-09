@@ -1,0 +1,32 @@
+version: 2
+models:
+- name: dim_customer
+  description: 'Customer domain: one observed user ID, session and order summaries
+    aggregated independently.'
+  columns:
+  - name: user_id
+    description: Customer/visitor identifier; one row per user seen in sessions or
+      orders.
+    tests:
+    - unique
+    - not_null
+    meta:
+      openmetadata:
+        tags:
+        - Sensitivity.Confidential
+  - name: first_session_at
+    description: Timestamp of the user's first session; null if the user only appears
+      in orders.
+  - name: first_order_at
+    description: Timestamp of the user's first order; null for users who never ordered.
+  - name: lifetime_sessions
+    description: Total sessions of the user.
+  - name: lifetime_orders
+    description: Total orders placed by the user.
+  config:
+    meta:
+      domain: customer
+      owner: analytics-engineering
+      openmetadata:
+        domain: Customer
+        tier: Tier.Tier2

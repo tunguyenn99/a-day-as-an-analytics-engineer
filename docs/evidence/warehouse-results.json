@@ -1,0 +1,19 @@
+{
+  "environment": "Local PostgreSQL 16; full real Xomdata extraction; no S3 archive or Supabase writes",
+  "source_rows": {
+    "website_sessions": 472871,
+    "website_pageviews": 1188124,
+    "orders": 32313,
+    "order_items": 40025,
+    "order_item_refunds": 1731,
+    "products": 4
+  },
+  "total_rows": 1735068,
+  "finance_totals": {
+    "orders": "32313",
+    "gross_revenue_usd": "1938509.75",
+    "refund_amount_usd": "85338.69",
+    "net_revenue_usd": "1853171.06"
+  },
+  "database_bytes": 1032778211
+}

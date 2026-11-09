@@ -1,0 +1,19 @@
+version: 2
+models:
+- name: dim_device
+  description: Conformed device dimension, including unknown/null device.
+  columns:
+  - name: device_key
+    description: 'Surrogate key of dim_device: md5 of device_type.'
+    tests:
+    - unique
+    - not_null
+  - name: device_type
+    description: 'Device class reported by the source: desktop or mobile.'
+  config:
+    meta:
+      domain: shared
+      owner: analytics-engineering
+      openmetadata:
+        domain: Shared
+        tier: Tier.Tier2

@@ -1,0 +1,41 @@
+name: analytics_engineering
+version: '1.0.0'
+config-version: 2
+profile: analytics_engineering
+model-paths: [models]
+macro-paths: [macros]
+test-paths: [tests]
+snapshot-paths: [snapshots]
+clean-targets: [target, dbt_packages]
+models:
+  analytics_engineering:
+    +persist_docs: {relation: true, columns: true}
+    +meta: {owner: analytics-engineering, domain: commerce}
+    bronze:
+      +schema: bronze
+      +materialized: view
+      +tags: [bronze]
+      +meta:
+        domain: source
+        openmetadata: {domain: WebAnalyticsSource, tier: Tier.Tier3}
+    silver:
+      +schema: silver
+      +materialized: table
+      +tags: [silver]
+      +meta:
+        domain: source
+        openmetadata: {domain: WebAnalyticsSource, tier: Tier.Tier3}
+    gold:
+      +schema: gold
+      +materialized: table
+      +tags: [gold]
+    platinum:
+      +schema: platinum
+      +materialized: table
+      +tags: [platinum]
+snapshots:
+  analytics_engineering:
+    +meta:
+      owner: analytics-engineering
+      domain: product
+      openmetadata: {domain: Product, tier: Tier.Tier3}

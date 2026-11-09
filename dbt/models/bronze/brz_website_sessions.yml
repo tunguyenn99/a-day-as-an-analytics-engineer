@@ -1,0 +1,23 @@
+version: 2
+models:
+- name: brz_website_sessions
+  description: Raw source envelope; grain one source website_session_id.
+  columns:
+  - name: source_record_id
+    description: Primary key of the source row, taken from the SQL Server table's
+      ID column.
+    tests:
+    - unique
+    - not_null
+  - name: record_hash
+    description: SHA-256 of the serialized JSON payload; changes when any source attribute
+      changes.
+  - name: payload
+    description: Full source row as JSONB; decimals are serialized as strings to keep
+      precision.
+  - name: ingested_at
+    description: Load timestamp of the row into landing (transaction time of the publishing
+      load).
+  - name: extraction_id
+    description: ID of the full extraction run that produced this row; joins to landing
+      ingestion_runs and the S3 raw batch prefix.
